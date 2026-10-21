@@ -9,7 +9,7 @@
 .ribbon-tab{border:0!important;border-radius:0!important;background:transparent!important;color:#3b3b3b!important;padding:12px 15px!important;position:relative;font-size:13px}
 .ribbon-tab.active{color:var(--excel)!important;font-weight:700}.ribbon-tab.active:after{content:"";height:3px;background:var(--excel);position:absolute;left:10px;right:10px;bottom:0}
 .toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 14px;background:#fff;border-bottom:1px solid #c9cdd2;min-height:76px}
-.tool-group{display:flex;align-items:center;gap:5px;padding:0 10px;border-right:1px solid #e1e4e8;min-height:48px}.tool-group:last-child{border-right:0}.group-label{font-size:10px;color:#72777d;text-align:center;margin-top:3px}
+.tool-group{display:flex;align-items:center;gap:5px;padding:0 10px;border-right:1px solid #e1e4e8;min-height:48px}.tool-group:last-child{border-right:0}.ribbon-file{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-left:1px solid #e1e4e8}.no-grid td,.no-grid th{border-color:transparent}.toolbar{min-height:64px}.group-label{display:none}.toolbar .tool-group{gap:6px;padding:0 9px}.toolbar button{min-height:34px}.group-label{font-size:10px;color:#72777d;text-align:center;margin-top:3px}
 button,select,input{background:#fff;color:var(--text);border:1px solid #c8cdd2;border-radius:3px;padding:7px 10px;font:inherit}
 button{cursor:pointer}button:hover{background:#eaf3ed;border-color:#9ab9a5}button:focus-visible,input:focus-visible{outline:2px solid #26834a;outline-offset:1px}
 button.primary{background:var(--excel);color:#fff;border-color:var(--excel);font-weight:600}
@@ -28,9 +28,79 @@ td.cell input.bold{font-weight:700}td.cell input.italic{font-style:italic}
 .tab{white-space:nowrap;border:0;border-radius:0;background:transparent;padding:8px 14px}.tab.primary{background:#fff;color:var(--excel);border-bottom:3px solid var(--excel);border-radius:0}
 .status{padding:5px 12px;background:var(--excel);color:#fff;font-size:11px;min-height:24px}
 @media(max-width:600px){.top{padding:9px 12px;top:0}.ribbon-tabs{top:54px;padding:0 4px}.ribbon-tab{padding:11px 12px!important}.toolbar{gap:4px;padding:7px}.tool-group{padding:0 5px;gap:4px}.toolbar button{padding:7px 8px}.wrap{height:calc(100dvh - 275px)}.formula{padding:7px}.sub{display:none}}
-</style></head><body><header class="top"><div><div class="logo">▦ Luma <b>Office</b></div><div class="sub">스프레드시트 · 저장소 기반 웹 앱</div></div><div style="margin-left:auto;display:flex;gap:6px"><button id="newSheet">＋ 시트 추가</button></div></header><nav class="ribbon-tabs" aria-label="리본 메뉴"><button class="ribbon-tab active" data-ribbon="홈">파일</button><button class="ribbon-tab" data-ribbon="홈">홈</button><button class="ribbon-tab" data-ribbon="삽입">삽입</button><button class="ribbon-tab" data-ribbon="페이지 레이아웃">페이지 레이아웃</button><button class="ribbon-tab" data-ribbon="수식">수식</button><button class="ribbon-tab" data-ribbon="데이터">데이터</button><button class="ribbon-tab" data-ribbon="검토">검토</button><button class="ribbon-tab" data-ribbon="보기">보기</button></nav><nav class="toolbar"><div class="tool-group"><div><button class="primary" id="new">새 문서</button><div class="group-label">문서</div></div><div><button id="undo">↶ 실행 취소</button><button id="redo">↷ 다시 실행</button><div class="group-label">실행 취소</div></div></div><div class="tool-group"><div><button id="bold"><b>B</b></button><button id="italic"><i>I</i></button><div class="group-label">글꼴</div></div><div><button id="sum">Σ 합계</button><div class="group-label">함수</div></div></div><div class="tool-group"><div><button id="download">CSV 내보내기</button><div class="group-label">내보내기</div></div><div><label style="display:inline-flex;align-items:center;gap:6px">CSV 가져오기 <input type="file" id="upload" accept=".csv,text/csv" style="max-width:135px;padding:5px"></label><div class="group-label">가져오기</div></div></div></nav><div class="formula"><input id="address" value="A1" aria-label="셀 주소"><span style="align-self:center;color:var(--muted)">fx</span><input id="formula" placeholder="값 또는 수식 입력 (예: =SUM(A1:A5))" aria-label="수식 입력"><button id="apply">적용</button></div><main class="wrap" id="wrap"><table id="grid"></table></main><div class="tabs" id="tabs"></div><div class="status" id="status">준비됨 · 셀을 선택하고 입력하세요. 수식: =A1+B1, =SUM(A1:A5), =AVERAGE(), =MIN(), =MAX(), =COUNT()</div><script>
+</style></head><body><header class="top"><div><div class="logo">▦ Luma <b>Office</b></div><div class="sub">스프레드시트 · 저장소 기반 웹 앱</div></div><div style="margin-left:auto;display:flex;gap:6px"><button id="newSheet">＋ 시트 추가</button></div></header><nav class="ribbon-tabs" aria-label="리본 메뉴">
+<button class="ribbon-tab active" data-ribbon="파일">파일</button><button class="ribbon-tab" data-ribbon="홈">홈</button><button class="ribbon-tab" data-ribbon="삽입">삽입</button><button class="ribbon-tab" data-ribbon="페이지 레이아웃">페이지 레이아웃</button><button class="ribbon-tab" data-ribbon="수식">수식</button><button class="ribbon-tab" data-ribbon="데이터">데이터</button><button class="ribbon-tab" data-ribbon="검토">검토</button><button class="ribbon-tab" data-ribbon="보기">보기</button>
+</nav><nav class="toolbar" id="toolbar" aria-label="선택한 메뉴 기능"></nav><div class="formula"><input id="address" value="A1" aria-label="셀 주소"><span style="align-self:center;color:var(--muted)">fx</span><input id="formula" placeholder="값 또는 수식 입력 (예: =SUM(A1:A5))" aria-label="수식 입력"><button id="apply">적용</button></div><main class="wrap" id="wrap"><table id="grid"></table></main><div class="tabs" id="tabs"></div><div class="status" id="status">준비됨 · 셀을 선택하고 입력하세요. 수식: =A1+B1, =SUM(A1:A5), =AVERAGE(), =MIN(), =MAX(), =COUNT()</div><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script>
+
+const ribbonDefs={
+'파일':[['새로 만들기','새 문서'],['열기','Excel/CSV 열기'],['저장','XLSX로 내보내기'],['CSV 내보내기','CSV 내보내기']],
+'홈':[['실행 취소','실행 취소'],['다시 실행','다시 실행'],['굵게','B'],['기울임','I'],['합계','Σ 합계'],['찾기','찾기'],['지우기','내용 지우기']],
+'삽입':[['새 시트','시트 추가'],['행 추가','행 추가'],['열 추가','열 추가'],['표 스타일','표 스타일']],
+'페이지 레이아웃':[['그리드라인','눈금선 표시'],['배율 100%','배율 100%'],['방향','인쇄 방향']],
+'수식':[['합계 SUM','SUM 함수'],['평균 AVERAGE','AVERAGE 함수'],['최솟값 MIN','MIN 함수'],['최댓값 MAX','MAX 함수'],['개수 COUNT','COUNT 함수'],['수식 다시 계산','다시 계산']],
+'데이터':[['정렬 오름차순','오름차순 정렬'],['정렬 내림차순','내림차순 정렬'],['자동 필터','자동 필터'],['CSV/Excel 가져오기','Excel/CSV 열기']],
+'검토':[['셀 메모','셀 메모'],['시트 이름 변경','시트 이름 변경']],
+'보기':[['수식 입력줄','수식 입력줄 표시'],['전체 화면 격자','전체 화면 격자'],['확대','확대'],['축소','축소']]
+};
+function drawRibbon(name){
+ document.querySelectorAll('[data-ribbon]').forEach(b=>b.classList.toggle('active',b.dataset.ribbon===name));
+ const bar=document.querySelector('#toolbar');
+ if(name==='파일'){
+ bar.innerHTML='<div class="tool-group"><div><button class="primary" data-action="새 문서">새로 만들기</button><div class="group-label">통합 문서</div></div><div><button data-action="Excel/CSV 열기">열기</button><div class="group-label">기존 파일</div></div><div><button data-action="XLSX로 내보내기">Excel 통합 문서 저장</button><div class="group-label">저장</div></div><div><button data-action="CSV 내보내기">CSV 내보내기</button><div class="group-label">내보내기</div></div><label class="ribbon-file">열기 <input type="file" id="upload" accept=".csv,.xlsx,.xls,.xlsm,text/csv" style="max-width:180px"></label></div>';
+ } else {
+ bar.innerHTML='';
+ const groups={};
+ (ribbonDefs[name]||[]).forEach(([label,action])=>{
+ const g=(action==='B'||action==='I')?'글꼴':(['실행 취소','다시 실행','새 문서','시트 추가'].includes(action)?'실행':'도구');
+ (groups[g]??=[]).push([label,action]);
+ });
+ Object.entries(groups).forEach(([g,items])=>{
+ const el=document.createElement('div');el.className='tool-group';
+ items.forEach(([label,action])=>{const b=document.createElement('button');b.textContent=label;b.dataset.action=action;el.appendChild(b)});
+ const cap=document.createElement('div');cap.className='group-label';cap.textContent=g;el.appendChild(cap);bar.appendChild(el);
+ });
+ }
+ bar.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>runAction(b.dataset.action)));
+ const up=bar.querySelector('#upload');if(up)up.addEventListener('change',importFile);
+}
+function runAction(a){
+ if(a==='새 문서'){if(confirm('새 통합 문서를 만들까요?')){snapshot();sheets=[{name:'시트1',data:{}}];active=0;selected='A1';render();status.textContent='새 통합 문서';}}
+ else if(a==='Excel/CSV 열기'){document.querySelector('#upload')?.click()||alert('파일 탭에서 파일 선택을 눌러 주세요.')}
+ else if(a==='XLSX로 내보내기')exportXlsx();
+ else if(a==='CSV 내보내기')document.querySelector('#download').click();
+ else if(a==='B')document.querySelector('#bold').click();
+ else if(a==='I')document.querySelector('#italic').click();
+ else if(a==='Σ 합계'||a==='SUM 함수')insertFunction('SUM');
+ else if(a==='AVERAGE 함수'||a==='MIN 함수'||a==='MAX 함수'||a==='COUNT 함수')insertFunction(a.split(' ')[0]);
+ else if(a==='실행 취소')document.querySelector('#undo').click();
+ else if(a==='다시 실행')document.querySelector('#redo').click();
+ else if(a==='시트 추가')document.querySelector('#newSheet').click();
+ else if(a==='내용 지우기'){snapshot();delete data()[selected];render();status.textContent=selected+' 내용 지움';}
+ else if(a==='찾기'){const q=prompt('찾을 내용을 입력하세요');if(q){let found=Object.keys(data()).find(k=>!k.includes('::')&&String(data()[k]).toLowerCase().includes(q.toLowerCase()));if(found){select(found);status.textContent=found+'에서 찾았습니다.'}else status.textContent='일치하는 셀이 없습니다.'}}
+ else if(a==='행 추가'){const p=parse(selected);snapshot();for(let r=R;r>p.r;r--)for(let c=1;c<=C;c++){let from=addr(r-1,c),to=addr(r,c);if(data()[from]!==undefined)data()[to]=data()[from];else delete data()[to]}for(let c=1;c<=C;c++)delete data()[addr(p.r,c)];render();}
+ else if(a==='열 추가'){const p=parse(selected);snapshot();for(let c=C;c>p.c;c--)for(let r=1;r<=R;r++){let from=addr(r,c-1),to=addr(r,c);if(data()[from]!==undefined)data()[to]=data()[from];else delete data()[to]}for(let r=1;r<=R;r++)delete data()[addr(r,p.c)];render();}
+ else if(a==='표 스타일') {document.querySelectorAll('td.cell input').forEach((el,i)=>{if(Math.floor(i/C)%2===1)el.style.background='#f3f8f5'});status.textContent='표 스타일 미리보기 적용';}
+ else if(a==='눈금선 표시'){document.querySelector('#grid').classList.toggle('no-grid');}
+ else if(a==='배율 100%'){document.querySelector('#wrap').style.zoom='1';}
+ else if(a==='인쇄 방향'){alert('브라우저 인쇄 설정에서 세로/가로 방향을 선택할 수 있습니다.')}
+ else if(a==='다시 계산'){render();status.textContent='수식 다시 계산 완료';}
+ else if(a==='오름차순 정렬'||a==='내림차순 정렬'){sortColumn(a==='오름차순 정렬'?1:-1);}
+ else if(a==='자동 필터'){status.textContent='자동 필터는 다음 단계에서 범위별 필터 UI로 확장할 예정입니다.';alert('현재 버전에서는 자동 필터가 아직 지원되지 않습니다.')}
+ else if(a==='셀 메모'){const note=prompt('선택 셀 메모 입력',data()[selected+'::note']||'');if(note!==null){snapshot();data()[selected+'::note']=note;status.textContent='메모 저장: '+selected;}}
+ else if(a==='시트 이름 변경'){const n=prompt('새 시트 이름',sheets[active].name);if(n){sheets[active].name=n;renderTabs();}}
+ else if(a==='수식 입력줄 표시'){document.querySelector('.formula').hidden=!document.querySelector('.formula').hidden;}
+ else if(a==='전체 화면 격자'){document.querySelector('#wrap').style.height='calc(100dvh - 150px)';}
+ else if(a==='확대'||a==='축소'){let w=document.querySelector('#wrap');w.style.zoom=String(Math.max(.6,Math.min(1.5,(parseFloat(w.style.zoom)||1)+(a==='확대'?.1:-.1))));}
+ else if(a==='파일')drawRibbon('파일');
+}
+function insertFunction(fn){const p=parse(selected);const start=addr(Math.max(1,p.r-4),p.c);snapshot();data()[selected]='='+fn+'('+start+':'+selected+')';render();select(selected);status.textContent=fn+' 함수 입력';}
+function sortColumn(direction){const p=parse(selected),items=[];for(let r=1;r<=R;r++){let a=addr(r,p.c),v=data()[a];if(v!==undefined)items.push({v,r})}items.sort((a,b)=>direction*(String(a.v).localeCompare(String(b.v),undefined,{numeric:true})));snapshot();for(let r=1;r<=R;r++)delete data()[addr(r,p.c)];items.forEach((it,i)=>data()[addr(i+1,p.c)]=it.v);render();status.textContent='선택 열 정렬 완료';}
+function importFile(e){const file=e.target.files&&e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{snapshot();if(/\.csv$/i.test(file.name)){const text=String(ev.target.result).replace(/^\ufeff/,'');const rows=parseCsv(text);const d={};rows.forEach((row,r)=>row.forEach((v,c)=>{if(v!==''&&r<R&&c<C)d[addr(r+1,c+1)]=v}));sheets[active].data=d;}else{if(!window.XLSX)throw new Error('Excel 파일 모듈을 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.');const wb=XLSX.read(ev.target.result,{type:'array',cellFormula:true});sheets=wb.SheetNames.map(name=>{const ws=wb.Sheets[name],d={};for(const key of Object.keys(ws)){if(key[0]==='!')continue;const cell=ws[key],p=parse(key);if(!p)continue;let v=cell.f?'='+cell.f:(cell.v??'');if(v!==''&&p.r<=R&&p.c<=C)d[key]=v;}return {name,data:d}});active=0;}selected='A1';render();status.textContent='파일 가져오기 완료: '+file.name;}catch(err){alert('파일을 열지 못했습니다: '+err.message);status.textContent='파일 열기 실패';}};if(/\.csv$/i.test(file.name))reader.readAsText(file);else reader.readAsArrayBuffer(file);e.target.value='';}
+function parseCsv(text){const rows=[];let row=[],v='',quoted=false;for(let i=0;i<text.length;i++){const ch=text[i];if(quoted){if(ch==='"'&&text[i+1]==='"'){v+='"';i++}else if(ch==='"')quoted=false;else v+=ch;}else if(ch==='"')quoted=true;else if(ch===','){row.push(v);v=''}else if(ch==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=ch;}row.push(v.replace(/\r$/,''));if(row.length>1||row[0]!=='')rows.push(row);return rows;}
+function exportXlsx(){if(!window.XLSX){alert('Excel 내보내기 모듈을 불러오지 못했습니다.');return}const wb=XLSX.utils.book_new();sheets.forEach(s=>{const rows=[];for(let r=1;r<=R;r++){const row=[];for(let c=1;c<=C;c++){const a=addr(r,c),v=rawSheet(s,a);row.push(typeof v==='string'&&v.startsWith('=')?{f:v.slice(1)}:v)}rows.push(row)}const ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,s.name.slice(0,31)||'Sheet');});XLSX.writeFile(wb,'Luma-Office.xlsx');status.textContent='Excel 파일 내보내기 완료';}
+function rawSheet(s,a){return s.data[a]??'';}
 const R=100,C=26,letters=Array.from({length:C},(_,i)=>String.fromCharCode(65+i));let sheets=[{name:'시트1',data:{}}],active=0,selected='A1',undoStack=[],redoStack=[],currentInput=null;
-document.querySelectorAll('[data-ribbon]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-ribbon]').forEach(x=>x.classList.remove('active'));b.classList.add('active');const name=b.dataset.ribbon;status.textContent=name+' 리본 · 현재 사용 가능한 도구는 아래에 표시됩니다.';}));
+document.querySelectorAll('[data-ribbon]').forEach(b=>b.addEventListener('click',()=>drawRibbon(b.dataset.ribbon)));
 const grid=document.querySelector('#grid'),formula=document.querySelector('#formula'),address=document.querySelector('#address'),status=document.querySelector('#status');
 function data(){return sheets[active].data}function parse(a){let m=/^([A-Z]+)(\d+)$/i.exec(a.trim());if(!m)return null;let c=0;for(const ch of m[1].toUpperCase())c=c*26+ch.charCodeAt(0)-64;return {r:+m[2],c}}function addr(r,c){let s='';while(c){let n=(c-1)%26;s=String.fromCharCode(65+n)+s;c=Math.floor((c-1)/26)}return s+r}
 function raw(a){return data()[a]??''}function val(a,seen=new Set()){if(seen.has(a))return '#CYCLE!';seen.add(a);let x=raw(a);if(typeof x!=='string')return x;if(!x.startsWith('='))return x;let exp=x.slice(1).toUpperCase().replace(/([A-Z]+\d+)/g,m=>{let v=val(m,new Set(seen));return typeof v==='number'?String(v):JSON.stringify(Number(v)||0)});let fn=x.slice(1).match(/^(SUM|AVERAGE|MIN|MAX|COUNT)\(([A-Z]+\d+):([A-Z]+\d+)\)$/i);if(fn){let p=parse(fn[2]),q=parse(fn[3]),nums=[];for(let r=Math.min(p.r,q.r);r<=Math.max(p.r,q.r);r++)for(let c=Math.min(p.c,q.c);c<=Math.max(p.c,q.c);c++){let n=Number(val(addr(r,c),new Set(seen)));if(raw(addr(r,c))!==''&&Number.isFinite(n))nums.push(n)}let f=fn[1].toUpperCase();return f==='SUM'?nums.reduce((a,b)=>a+b,0):f==='AVERAGE'?(nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:0):f==='MIN'?(nums.length?Math.min(...nums):0):f==='MAX'?(nums.length?Math.max(...nums):0):nums.length}if(!/^[\d\s()+\-*/.]+$/.test(exp))return '#VALUE!';try{return Function('"use strict";return ('+exp+')')()}catch{return '#ERROR!'}}
@@ -50,6 +120,6 @@ document.querySelector('#redo').onclick=()=>{if(redoStack.length){undoStack.push
 document.querySelector('#newSheet').onclick=()=>{sheets.push({name:'시트'+(sheets.length+1),data:{}});active=sheets.length-1;selected='A1';render()};
 document.querySelector('#new').onclick=()=>{if(confirm('현재 문서를 비우고 새 문서를 만들까요?')){snapshot();sheets=[{name:'시트1',data:{}}];active=0;selected='A1';render()}};
 document.querySelector('#download').onclick=()=>{let rows=[];for(let r=1;r<=R;r++){let row=[];for(let c=1;c<=C;c++)row.push(String(val(addr(r,c))??'').replace(/"/g,'""'));rows.push(row.map(v=>'"'+v+'"').join(','))}let blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8;'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=sheets[active].name+'.csv';a.click();URL.revokeObjectURL(a.href)};
-document.querySelector('#upload').onchange=async e=>{let f=e.target.files[0];if(!f)return;let text=await f.text(),rows=text.replace(/^\ufeff/,'').split(/\r?\n/);snapshot();let d={};rows.forEach((line,r)=>{let cells=line.match(/("(?:[^"]|"")*"|[^,]*)(,|$)/g)||[];cells.forEach((piece,c)=>{let v=piece.replace(/,$/,'').replace(/^"|"$/g,'').replace(/""/g,'"');if(v)d[addr(r+1,c+1)]=v})});sheets[active].data=d;render();status.textContent='CSV 가져오기 완료'};
-render();
+document.querySelector('#upload').onchange=importFile
+render();drawRibbon('홈');
 </script></body></html>
