@@ -39,7 +39,7 @@ const ribbonDefs={
 '페이지 레이아웃':[['그리드라인','눈금선 표시'],['배율 100%','배율 100%'],['방향','인쇄 방향']],
 '수식':[['합계 SUM','SUM 함수'],['평균 AVERAGE','AVERAGE 함수'],['최솟값 MIN','MIN 함수'],['최댓값 MAX','MAX 함수'],['개수 COUNT','COUNT 함수'],['비어 있지 않은 개수 COUNTA','COUNTA 함수'],['조건 합계 SUMIF','SUMIF 함수'],['조건 IF','IF 함수'],['반올림 ROUND','ROUND 함수'],['수식 표시 전환','수식 표시 전환'],['수식 다시 계산','다시 계산']],
 '데이터':[['정렬 오름차순','오름차순 정렬'],['정렬 내림차순','내림차순 정렬'],['자동 필터','자동 필터'],['필터 해제','필터 해제'],['중복 제거','중복 제거'],['텍스트 나누기','텍스트 나누기'],['CSV/Excel 가져오기','Excel/CSV 열기']],
-'검토':[['셀 메모','셀 메모'],['시트 이름 변경','시트 이름 변경'],['시트 삭제','시트 삭제']]
+'검토':[['셀 메모','셀 메모'],['시트 이름 변경','시트 이름 변경'],['시트 삭제','시트 삭제']],
 '보기':[['수식 입력줄','수식 입력줄 표시'],['전체 화면 격자','전체 화면 격자'],['확대','확대'],['축소','축소'],['고정 창','고정 창'],['고정 창 해제','고정 창 해제']]
 };
 function drawRibbon(name){
@@ -143,7 +143,7 @@ function raw(a){return data()[a]??''}function displayVal(a){const v=val(a),fmt=d
  m=formula.match(/^IF\(([^,]+),\s*("[^"]*"|[^,]+),\s*("[^"]*"|[^,]+)\)$/i);if(m){const cond=m[1].trim().replace(/([A-Z]+\d+)/gi,z=>{const v=val(z.toUpperCase(),new Set(seen));return typeof v==='string'?JSON.stringify(v):String(Number(v)||0)});let ok=false;try{ok=Function('"use strict";return ('+cond+')')()}catch{}const branch=ok?m[2].trim():m[3].trim();if(/^"[\s\S]*"$/.test(branch))return branch.slice(1,-1);return val(branch.toUpperCase(),new Set(seen));}
  m=formula.match(/^CONCAT(?:ENATE)?\((.*)\)$/i);if(m){return m[1].split(',').map(z=>{z=z.trim();if(/^"[\s\S]*"$/.test(z))return z.slice(1,-1);const ref=z.match(/^[A-Z]+\d+$/i);return ref?String(val(z.toUpperCase(),new Set(seen))??''):z}).join('');}
  let exp=formula.replace(/([A-Z]+\d+)/gi,ref=>{const v=val(ref.toUpperCase(),new Set(seen));return typeof v==='number'?String(v):String(Number(v)||0)}).replace(/\^/g,'**');
- if(!/^[\d\s()+\-*/.**]+$/.test(exp))return '#VALUE!';
+ if(!/^[\d\s()+\-*\/.]+$/.test(exp))return '#VALUE!';
  try{return Function('"use strict";return ('+exp+')')()}catch{return '#ERROR!'}
 }
 function snapshot(){undoStack.push(JSON.stringify(sheets));if(undoStack.length>100)undoStack.shift();redoStack=[]}
