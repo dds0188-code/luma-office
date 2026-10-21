@@ -30,7 +30,7 @@ td.cell input.bold{font-weight:700}td.cell input.italic{font-style:italic}
 @media(max-width:600px){.top{padding:9px 12px;top:0}.ribbon-tabs{top:54px;padding:0 4px}.ribbon-tab{padding:11px 12px!important}.toolbar{gap:4px;padding:7px}.tool-group{padding:0 5px;gap:4px}.toolbar button{padding:7px 8px}.wrap{height:calc(100dvh - 275px)}.formula{padding:7px}.sub{display:none}}
 </style></head><body><header class="top"><div><div class="logo">▦ Luma <b>Office</b></div><div class="sub">스프레드시트 · 저장소 기반 웹 앱</div></div><div style="margin-left:auto;display:flex;gap:6px"><button id="newSheet">＋ 시트 추가</button></div></header><nav class="ribbon-tabs" aria-label="리본 메뉴">
 <button class="ribbon-tab active" data-ribbon="파일">파일</button><button class="ribbon-tab" data-ribbon="홈">홈</button><button class="ribbon-tab" data-ribbon="삽입">삽입</button><button class="ribbon-tab" data-ribbon="페이지 레이아웃">페이지 레이아웃</button><button class="ribbon-tab" data-ribbon="수식">수식</button><button class="ribbon-tab" data-ribbon="데이터">데이터</button><button class="ribbon-tab" data-ribbon="검토">검토</button><button class="ribbon-tab" data-ribbon="보기">보기</button>
-</nav><nav class="toolbar" id="toolbar" aria-label="선택한 메뉴 기능"></nav><div class="formula"><input id="address" value="A1" aria-label="셀 주소"><span style="align-self:center;color:var(--muted)">fx</span><input id="formula" placeholder="값 또는 수식 입력 (예: =SUM(A1:A5))" aria-label="수식 입력"><button id="apply">적용</button></div><main class="wrap" id="wrap"><table id="grid"></table></main><div class="tabs" id="tabs"></div><div class="status" id="status">준비됨 · 셀을 선택하고 입력하세요. 수식: =A1+B1, =SUM(A1:A5), =AVERAGE(), =MIN(), =MAX(), =COUNT()</div><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script>
+</nav><nav class="toolbar" id="toolbar" aria-label="선택한 메뉴 기능"></nav><div id="legacy-controls" hidden><button id="new"></button><button id="bold"></button><button id="italic"></button><button id="sum"></button><button id="undo"></button><button id="redo"></button><button id="download"></button></div><div class="formula"><input id="address" value="A1" aria-label="셀 주소"><span style="align-self:center;color:var(--muted)">fx</span><input id="formula" placeholder="값 또는 수식 입력 (예: =SUM(A1:A5))" aria-label="수식 입력"><button id="apply">적용</button></div><main class="wrap" id="wrap"><table id="grid"></table></main><div class="tabs" id="tabs"></div><div class="status" id="status">준비됨 · 셀을 선택하고 입력하세요. 수식: =A1+B1, =SUM(A1:A5), =AVERAGE(), =MIN(), =MAX(), =COUNT()</div><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script>
 
 const ribbonDefs={
 '파일':[['새로 만들기','새 문서'],['열기','Excel/CSV 열기'],['저장','XLSX로 내보내기'],['CSV 내보내기','CSV 내보내기']],
@@ -65,7 +65,7 @@ function drawRibbon(name){
 }
 function runAction(a){
  if(a==='새 문서'){if(confirm('새 통합 문서를 만들까요?')){snapshot();sheets=[{name:'시트1',data:{}}];active=0;selected='A1';render();status.textContent='새 통합 문서';}}
- else if(a==='Excel/CSV 열기'){document.querySelector('#upload')?.click()||alert('파일 탭에서 파일 선택을 눌러 주세요.')}
+ else if(a==='Excel/CSV 열기'){const up=document.querySelector('#toolbar #upload');if(up)up.click();else{drawRibbon('파일');document.querySelector('#toolbar #upload')?.click();}}
  else if(a==='XLSX로 내보내기')exportXlsx();
  else if(a==='CSV 내보내기')document.querySelector('#download').click();
  else if(a==='B')document.querySelector('#bold').click();
@@ -120,6 +120,5 @@ document.querySelector('#redo').onclick=()=>{if(redoStack.length){undoStack.push
 document.querySelector('#newSheet').onclick=()=>{sheets.push({name:'시트'+(sheets.length+1),data:{}});active=sheets.length-1;selected='A1';render()};
 document.querySelector('#new').onclick=()=>{if(confirm('현재 문서를 비우고 새 문서를 만들까요?')){snapshot();sheets=[{name:'시트1',data:{}}];active=0;selected='A1';render()}};
 document.querySelector('#download').onclick=()=>{let rows=[];for(let r=1;r<=R;r++){let row=[];for(let c=1;c<=C;c++)row.push(String(val(addr(r,c))??'').replace(/"/g,'""'));rows.push(row.map(v=>'"'+v+'"').join(','))}let blob=new Blob(['\ufeff'+rows.join('\r\n')],{type:'text/csv;charset=utf-8;'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=sheets[active].name+'.csv';a.click();URL.revokeObjectURL(a.href)};
-document.querySelector('#upload').onchange=importFile
 render();drawRibbon('홈');
 </script></body></html>
