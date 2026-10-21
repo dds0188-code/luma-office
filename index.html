@@ -34,13 +34,13 @@ td.cell input.bold{font-weight:700}td.cell input.italic{font-style:italic}
 
 const ribbonDefs={
 '파일':[['새로 만들기','새 문서'],['열기','Excel/CSV 열기'],['저장','XLSX로 내보내기'],['CSV 내보내기','CSV 내보내기']],
-'홈':[['실행 취소','실행 취소'],['다시 실행','다시 실행'],['굵게','B'],['기울임','I'],['가운데 정렬','가운데 정렬'],['왼쪽 정렬','왼쪽 정렬'],['배경색','배경색'],['글자색','글자색'],['테두리','테두리'],['합계','Σ 합계'],['찾기','찾기'],['지우기','내용 지우기']],
-'삽입':[['새 시트','시트 추가'],['행 추가','행 추가'],['열 추가','열 추가'],['셀 병합/해제','셀 병합/해제'],['행 높이','행 높이'],['열 너비','열 너비'],['표 스타일','표 스타일']],
+'홈':[['실행 취소','실행 취소'],['다시 실행','다시 실행'],['굵게','B'],['기울임','I'],['밑줄','밑줄'],['글꼴 크기','글꼴 크기'],['가운데 정렬','가운데 정렬'],['왼쪽 정렬','왼쪽 정렬'],['오른쪽 정렬','오른쪽 정렬'],['줄 바꿈','줄 바꿈'],['배경색','배경색'],['글자색','글자색'],['테두리','테두리'],['숫자 형식','숫자 형식'],['합계','Σ 합계'],['찾기','찾기'],['바꾸기','바꾸기'],['지우기','내용 지우기'],['서식 지우기','서식 지우기']],
+'삽입':[['새 시트','시트 추가'],['행 삽입','행 추가'],['열 삽입','열 추가'],['셀 병합/해제','셀 병합/해제'],['하이퍼링크','하이퍼링크'],['행 높이','행 높이'],['열 너비','열 너비'],['표 스타일','표 스타일']],
 '페이지 레이아웃':[['그리드라인','눈금선 표시'],['배율 100%','배율 100%'],['방향','인쇄 방향']],
-'수식':[['합계 SUM','SUM 함수'],['평균 AVERAGE','AVERAGE 함수'],['최솟값 MIN','MIN 함수'],['최댓값 MAX','MAX 함수'],['개수 COUNT','COUNT 함수'],['수식 다시 계산','다시 계산']],
-'데이터':[['정렬 오름차순','오름차순 정렬'],['정렬 내림차순','내림차순 정렬'],['자동 필터','자동 필터'],['필터 해제','필터 해제'],['중복 제거','중복 제거'],['CSV/Excel 가져오기','Excel/CSV 열기']],
-'검토':[['셀 메모','셀 메모'],['시트 이름 변경','시트 이름 변경']],
-'보기':[['수식 입력줄','수식 입력줄 표시'],['전체 화면 격자','전체 화면 격자'],['확대','확대'],['축소','축소'],['고정 창','고정 창 해제']]
+'수식':[['합계 SUM','SUM 함수'],['평균 AVERAGE','AVERAGE 함수'],['최솟값 MIN','MIN 함수'],['최댓값 MAX','MAX 함수'],['개수 COUNT','COUNT 함수'],['비어 있지 않은 개수 COUNTA','COUNTA 함수'],['조건 합계 SUMIF','SUMIF 함수'],['조건 IF','IF 함수'],['반올림 ROUND','ROUND 함수'],['수식 표시 전환','수식 표시 전환'],['수식 다시 계산','다시 계산']],
+'데이터':[['정렬 오름차순','오름차순 정렬'],['정렬 내림차순','내림차순 정렬'],['자동 필터','자동 필터'],['필터 해제','필터 해제'],['중복 제거','중복 제거'],['텍스트 나누기','텍스트 나누기'],['CSV/Excel 가져오기','Excel/CSV 열기']],
+'검토':[['셀 메모','셀 메모'],['시트 이름 변경','시트 이름 변경'],['시트 삭제','시트 삭제']]
+'보기':[['수식 입력줄','수식 입력줄 표시'],['전체 화면 격자','전체 화면 격자'],['확대','확대'],['축소','축소'],['고정 창','고정 창'],['고정 창 해제','고정 창 해제']]
 };
 function drawRibbon(name){
  document.querySelectorAll('[data-ribbon]').forEach(b=>b.classList.toggle('active',b.dataset.ribbon===name));
@@ -79,6 +79,25 @@ function runAction(a){
  else if(a==='중복 제거'){const p=parse(selected),seen=new Set();snapshot();for(let r=p.r;r<=R;r++){const key=String(raw(addr(r,p.c)));if(seen.has(key))delete data()[addr(r,p.c)];else seen.add(key)}render();status.textContent='선택 열의 중복값 제거 완료';}
  else if(a==='고정 창 해제'){document.querySelectorAll('th').forEach(th=>th.style.position='sticky');status.textContent='행/열 머리글 고정은 기본 표시 상태입니다.';}
  else if(a==='고정 창'){alert('현재 선택 셀 기준 고정 창은 다음 업데이트에서 구현 예정입니다.');}
+ else if(a==='밑줄'){snapshot();const s=data()[selected+'::style']||{};s.font={...(s.font||{}),underline:!s.font?.underline};data()[selected+'::style']=s;render();}
+ else if(a==='글꼴 크기'){const n=Number(prompt('글꼴 크기(pt)','11'));if(n>0&&n<100){snapshot();const s=data()[selected+'::style']||{};s.font={...(s.font||{}),size:n,sz:n};data()[selected+'::style']=s;render();}}
+ else if(a==='오른쪽 정렬'){snapshot();const s=data()[selected+'::style']||{};s.alignment={...(s.alignment||{}),horizontal:'right'};data()[selected+'::style']=s;render();}
+ else if(a==='줄 바꿈'){snapshot();const s=data()[selected+'::style']||{};s.alignment={...(s.alignment||{}),wrapText:!s.alignment?.wrapText};data()[selected+'::style']=s;render();}
+ else if(a==='숫자 형식'){const z=prompt('형식 코드 (일반: General, 숫자: #,##0.00, 통화: ₩#,##0)','#,##0.00');if(z){snapshot();data()[selected+'::numFmt']=z;render();}}
+ else if(a==='서식 지우기'){snapshot();delete data()[selected+'::style'];delete data()[selected+'::bold'];delete data()[selected+'::italic'];delete data()[selected+'::numFmt'];render();}
+ else if(a==='바꾸기'){const q=prompt('찾을 텍스트');if(q!==null&&q!==''){const rep=prompt('바꿀 텍스트','')??'';snapshot();for(const k of Object.keys(data()))if(!k.includes('::')&&typeof data()[k]==='string')data()[k]=data()[k].split(q).join(rep);render();}}
+ else if(a==='하이퍼링크'){const url=prompt('링크 주소 (https://...)');if(url){snapshot();data()[selected+'::hyperlink']=url;data()[selected]=String(raw(selected)||url);render();}}
+ else if(a==='인쇄 미리보기'||a==='인쇄'){window.print();}
+ else if(a==='텍스트 나누기'){const sep=prompt('구분 문자 입력 (예: , 또는 공백)',',');if(sep){const p=parse(selected),n=Math.max(1,Number(prompt('나눌 열 개수','3'))||3);snapshot();for(let rr=p.r;rr<=R;rr++){const parts=String(raw(addr(rr,p.c))||'').split(sep);parts.slice(0,n).forEach((x,i)=>{data()[addr(rr,p.c+i)]=x;});}C=Math.max(C,p.c+n-1);render();}}
+ else if(a==='시트 삭제'){if(sheets.length>1&&confirm('현재 시트를 삭제할까요?')){sheets.splice(active,1);active=Math.max(0,active-1);selected='A1';render();}}
+ else if(a==='SUMIF 함수'){formula.value='=SUMIF(A1:A10,"조건",B1:B10)';status.textContent='SUMIF 수식 템플릿이 입력되었습니다. 조건과 범위를 수정하세요.';}
+ else if(a==='IF 함수'){formula.value='=IF(A1>0,"참","거짓")';status.textContent='IF 수식 템플릿이 입력되었습니다. 적용 전 수식을 확인하세요.';}
+ else if(a==='ROUND 함수'){formula.value='=ROUND(A1,2)';status.textContent='ROUND 수식 템플릿이 입력되었습니다. 적용 전 수식을 확인하세요.';}
+ else if(a==='수식 표시 전환'){const on=grid.dataset.showFormulas!=='1';grid.dataset.showFormulas=on?'1':'0';grid.querySelectorAll('[data-cell]').forEach(el=>{el.value=on?String(raw(el.dataset.cell)||''):String(displayVal(el.dataset.cell)??'')});status.textContent=on?'수식 표시':'계산 결과 표시';}
+ else if(a==='다시 계산'){render();status.textContent='현재 지원하는 수식을 다시 계산했습니다.';}
+ else if(a==='확대'||a==='축소'){const z=Number(prompt('화면 배율 (%)',a==='확대'?'125':'90'));if(z>=50&&z<=200)document.querySelector('#wrap').style.zoom=String(z/100);}
+ else if(a==='고정 창'){status.textContent='고정 창은 아직 실제 고정 기능이 구현되지 않았습니다.';}
+ else if(a==='고정 창 해제'){status.textContent='고정 창 기능은 미지원 상태입니다.';}
  else if(a==='B')document.querySelector('#bold').click();
  else if(a==='I')document.querySelector('#italic').click();
  else if(a==='Σ 합계'||a==='SUM 함수')insertFunction('SUM');
