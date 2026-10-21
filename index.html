@@ -138,7 +138,7 @@ function runAction(a){
 function insertFunction(fn){const p=parse(selected);const start=addr(Math.max(1,p.r-4),p.c);snapshot();data()[selected]='='+fn+'('+start+':'+selected+')';render();select(selected);status.textContent=fn+' 함수 입력';}
 function sortColumn(direction){
  const p=parse(selected),rows=[];
- for(let r=1;r<=R;r++){const cells={};let has=false;for(let cc=1;cc<=C;cc++){const a=addr(r,cc);for(const k of Object.keys(data()))if(k===a||k.startsWith(a+'::')){cells[k]=data()[k];has=true;}}rows.push({r,cells,key:raw(addr(r,p.c)),has});}
+ for(let r=1;r<=R;r++){const cells={};let has=false;for(let cc=1;cc<=C;cc++){const a=addr(r,cc);if(data()[a]!==undefined){cells[a]=data()[a];has=true;}for(const suffix of ['::style','::numFmt','::bold','::italic','::note','::hyperlink','::validation','::conditional']){const k=a+suffix;if(data()[k]!==undefined)cells[k]=data()[k];}}rows.push({r,cells,key:raw(addr(r,p.c)),has});}
  snapshot();rows.sort((a,b)=>{if(!a.has&&!b.has)return 0;if(!a.has)return 1;if(!b.has)return -1;const av=a.key,bv=b.key,an=Number(av),bn=Number(bv);const cmp=av!==''&&bv!==''&&Number.isFinite(an)&&Number.isFinite(bn)?an-bn:String(av??'').localeCompare(String(bv??''),'ko',{numeric:true,sensitivity:'base'});return direction*cmp;});
  for(const k of Object.keys(data())){if(k.includes('::')){const m=/^([A-Z]+)(\d+)::/.exec(k);if(m&&Number(m[2])<=R)delete data()[k];}else{const q=parse(k);if(q&&q.r<=R)delete data()[k];}}
  rows.forEach((row,i)=>{const targetRow=i+1;for(const [key,value] of Object.entries(row.cells)){const m=/^([A-Z]+)(\d+)(::.*)?$/.exec(key);if(!m)continue;data()[m[1]+targetRow+(m[3]||'')]=value;}});
