@@ -63,7 +63,8 @@ function drawRibbon(name){
  bar.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>runAction(b.dataset.action)));
  const up=bar.querySelector('#upload');if(up)up.addEventListener('change',importFile);
 }
-function rangeBounds(input){const rg=parseRange(input);if(rg)return rg;const p=parse(String(input||'').trim().toUpperCase());return p?{r1:p.r,c1:p.c,r2:p.r,c2:p.c}:null}\nfunction activeRangeText(fallback){return selectedRange||fallback||selected;}
+function rangeBounds(input){const rg=parseRange(input);if(rg)return rg;const p=parse(String(input||'').trim().toUpperCase());return p?{r1:p.r,c1:p.c,r2:p.r,c2:p.c}:null}
+function activeRangeText(fallback){return selectedRange||fallback||selected;}
 function cloneJson(v){return v===undefined?undefined:JSON.parse(JSON.stringify(v))}
 function translateFormula(formula,dr,dc){if(typeof formula!=='string'||!formula.startsWith('='))return formula;return formula.replace(/("(?:[^"]|"")*")|(?<![A-Z0-9_])((?:\$?)[A-Z]{1,3}(?:\$?)\d+)(?![A-Z0-9_])/gi,(all,str,ref)=>{if(str)return str;const m=/^(\$?)([A-Z]{1,3})(\$?)(\d+)$/i.exec(ref);if(!m)return ref;const p=parse(m[2]+m[4]);const col=m[1]?p.c:p.c+dc,row=m[3]?p.r:p.r+dr;if(col<1||row<1)return '#REF!';return m[1]+colName(col)+m[3]+row;});}
 function copyCellMetadata(from,to,includeValue=true){const d=data();if(includeValue){if(d[from]===undefined)delete d[to];else {const fp=parse(from),tp=parse(to),v=d[from];d[to]=typeof v==='string'&&v.startsWith('=')?translateFormula(v,tp.r-fp.r,tp.c-fp.c):v;}}for(const suffix of ['::style','::numFmt','::bold','::italic','::note','::hyperlink','::validation','::conditional']){const x=from+suffix,y=to+suffix;if(d[x]===undefined)delete d[y];else d[y]=cloneJson(d[x]);}}
