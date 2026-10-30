@@ -183,7 +183,7 @@ function data(){return sheets[active].data}function parse(a){let m=/^([A-Z]+)(\d
 function raw(a){return data()[a]??''}function displayVal(a){const v=val(a),fmt=data()[a+'::numFmt'];if(fmt&&window.XLSX&&typeof v==='number'){try{return XLSX.SSF.format(fmt,v)}catch{}}return v}function val(a,seen=new Set()){
  if(seen.has(a))return '#CYCLE!';seen.add(a);
  const x=raw(a);if(typeof x!=='string')return x;if(!x.startsWith('='))return x;
- const formula=x.slice(1).trim();
+ let formula=x.slice(1).trim();
  let cm=formula.match(/^(SUMIF|COUNTIF)\(([A-Z]+\d+):([A-Z]+\d+),\s*("[^"]*"|[^,]+?)(?:,\s*([A-Z]+\d+):([A-Z]+\d+))?\)$/i);
  if(cm){const p=parse(cm[2]),q=parse(cm[3]),crit=cm[4].trim().replace(/^"|"$/g,''),sp=cm[5]?parse(cm[5]):p,sq=cm[6]?parse(cm[6]):q;const match=(v)=>{const z=String(v??'');const n=Number(v),t=Number(crit);if(/^(>=|<=|<>|>|<|=)/.test(crit)){const op=crit.match(/^(>=|<=|<>|>|<|=)/)[0],rhs=crit.slice(op.length);const right=Number.isFinite(Number(rhs))&&rhs.trim()!==''?Number(rhs):rhs;const left=Number.isFinite(n)&&String(v).trim()!==''?n:z;return op==='>='?left>=right:op==='<='?left<=right:op==='>'?left>right:op==='<'?left<right:op==='='?left==right:left!=right;}return z.toLowerCase()===crit.toLowerCase();};let total=0,count=0;for(let rr=p.r;rr<=q.r;rr++)for(let cc=p.c;cc<=q.c;cc++){const v=val(addr(rr,cc),new Set(seen));if(match(v)){count++;const sr=sp.r+(rr-p.r),sc=sp.c+(cc-p.c);total+=Number(val(addr(sr,sc),new Set(seen)))||0;}}return cm[1].toUpperCase()==='COUNTIF'?count:total;}
  let m=formula.match(/^(SUM|AVERAGE|MIN|MAX|COUNT|COUNTA)\(([A-Z]+\d+):([A-Z]+\d+)\)$/i);
@@ -217,6 +217,9 @@ function raw(a){return data()[a]??''}function displayVal(a){const v=val(a),fmt=d
  case'YEAR':case'MONTH':case'DAY':case'WEEKDAY':{const d=new Date(vals[0]);if(isNaN(d))return '#VALUE!';return fn==='YEAR'?d.getFullYear():fn==='MONTH'?d.getMonth()+1:fn==='DAY'?d.getDate():d.getDay()+1;}
  case'NETWORKDAYS':{const a=new Date(vals[0]),b=new Date(vals[1]);if(isNaN(a)||isNaN(b))return '#VALUE!';let n=0,step=a<=b?1:-1;for(let d=new Date(a);step>0?d<=b:d>=b;d.setDate(d.getDate()+step))if(d.getDay()!==0&&d.getDay()!==6)n+=step;return n;}
  }}
+ // Resolve sheet-scoped defined names before evaluating cell references
+ const defined=sheets[active].definedNames||{};
+ for(const [nm,ref] of Object.entries(defined)){if(/^[A-Z_][A-Z0-9_.]*$/i.test(nm)&&typeof ref==='string'&&/^[A-Z]+\d+$/i.test(ref)){const safe=nm.replace(/\./g,'\\.');const re=new RegExp('(^|[^A-Z0-9_.])'+safe+'(?=[^A-Z0-9_.]|$)','gi');formula=formula.replace(re,(whole,prefix)=>prefix+ref.toUpperCase());}}
  let exp=formula.replace(/([A-Z]+\d+)/gi,ref=>{const v=val(ref.toUpperCase(),new Set(seen));return typeof v==='number'?String(v):String(Number(v)||0)}).replace(/\^/g,'**');
  if(!/^[\d\s()+\-*\/.]+$/.test(exp))return '#VALUE!';
  try{return Function('"use strict";return ('+exp+')')()}catch{return '#ERROR!'}
