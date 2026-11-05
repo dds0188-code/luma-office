@@ -65,19 +65,19 @@ td.cell input{box-shadow:none}
 td.cell.active-cell{outline:2px solid #217346;outline-offset:-2px;position:relative;z-index:2}
 .toolbar .tool-group{max-width:none}
 .toolbar .tool-group button{display:inline-flex;align-items:center;justify-content:center}
-</style></head><body><header class="top"><div><div class="logo">▦ Luma <b>Office</b></div><div class="sub">스프레드시트 · 저장소 기반 웹 앱</div></div><div style="margin-left:auto;display:flex;gap:6px"><button id="newSheet">＋ 시트 추가</button></div></header><nav class="ribbon-tabs" aria-label="리본 메뉴">
+.grid.hide-headers th,.grid.hide-headers td.rowhead{visibility:hidden}.page-break-preview{background-image:repeating-linear-gradient(0deg,transparent 0,transparent 26px,#2b78c8 26px,#2b78c8 27px),repeating-linear-gradient(90deg,transparent 0,transparent 109px,#2b78c8 109px,#2b78c8 110px);}</style></head><body><header class="top"><div><div class="logo">▦ Luma <b>Office</b></div><div class="sub">스프레드시트 · 저장소 기반 웹 앱</div></div><div style="margin-left:auto;display:flex;gap:6px"><button id="newSheet">＋ 시트 추가</button></div></header><nav class="ribbon-tabs" aria-label="리본 메뉴">
 <button class="ribbon-tab active" data-ribbon="파일">파일</button><button class="ribbon-tab" data-ribbon="홈">홈</button><button class="ribbon-tab" data-ribbon="삽입">삽입</button><button class="ribbon-tab" data-ribbon="페이지 레이아웃">페이지 레이아웃</button><button class="ribbon-tab" data-ribbon="수식">수식</button><button class="ribbon-tab" data-ribbon="데이터">데이터</button><button class="ribbon-tab" data-ribbon="검토">검토</button><button class="ribbon-tab" data-ribbon="보기">보기</button>
 </nav><nav class="toolbar" id="toolbar" aria-label="선택한 메뉴 기능"></nav><div id="legacy-controls" hidden><button id="new"></button><button id="bold"></button><button id="italic"></button><button id="sum"></button><button id="undo"></button><button id="redo"></button><button id="download"></button></div><div class="formula"><input id="address" value="A1" aria-label="셀 주소"><span style="align-self:center;color:var(--muted)">fx</span><input id="formula" placeholder="값 또는 수식 입력 (예: =SUM(A1:A5))" aria-label="수식 입력"><button id="apply">적용</button></div><main class="wrap" id="wrap"><table id="grid"></table></main><div class="tabs" id="tabs"></div><div class="status" id="status">준비됨 · 셀을 선택하고 입력하세요. 수식: =A1+B1, =SUM(A1:A5), =AVERAGE(), =MIN(), =MAX(), =COUNT()</div><script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script><script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script><script>
 
 const ribbonDefs={
 '파일':[['새로 만들기','새 문서'],['열기','Excel/CSV 열기'],['저장','XLSX로 내보내기'],['CSV 내보내기','CSV 내보내기']],
-'홈':[['실행 취소','실행 취소'],['다시 실행','다시 실행'],['범위 복사','범위 복사'],['굵게','B'],['기울임','I'],['밑줄','밑줄'],['글꼴 크기','글꼴 크기'],['가운데 정렬','가운데 정렬'],['왼쪽 정렬','왼쪽 정렬'],['오른쪽 정렬','오른쪽 정렬'],['줄 바꿈','줄 바꿈'],['배경색','배경색'],['글자색','글자색'],['테두리','테두리'],['숫자 형식','숫자 형식'],['합계','Σ 합계'],['찾기','찾기'],['바꾸기','바꾸기'],['지우기','내용 지우기'],['서식 지우기','서식 지우기'],['범위 서식 복사','범위 서식 복사'],['범위 지우기','범위 지우기'],['아래로 채우기','아래로 채우기'],['오른쪽으로 채우기','오른쪽으로 채우기'],['값만 붙여넣기','값만 붙여넣기']],
-'삽입':[['새 시트','시트 추가'],['행 삽입','행 추가'],['열 삽입','열 추가'],['행 삭제','행 삭제'],['열 삭제','열 삭제'],['셀 병합/해제','셀 병합/해제'],['하이퍼링크','하이퍼링크'],['행 높이','행 높이'],['열 너비','열 너비'],['차트 삽입','차트 삽입'],['표 스타일','표 스타일']],
-'페이지 레이아웃':[['그리드라인','눈금선 표시'],['배율 100%','배율 100%'],['방향','인쇄 방향']],
+'홈':[['실행 취소','실행 취소'],['다시 실행','다시 실행'],['범위 복사','범위 복사'],['굵게','B'],['기울임','I'],['밑줄','밑줄'],['글꼴 크기','글꼴 크기'],['가운데 정렬','가운데 정렬'],['왼쪽 정렬','왼쪽 정렬'],['오른쪽 정렬','오른쪽 정렬'],['위쪽 정렬','위쪽 정렬'],['세로 가운데 정렬','세로 가운데 정렬'],['아래쪽 정렬','아래쪽 정렬'],['줄 바꿈','줄 바꿈'],['들여쓰기 증가','들여쓰기 증가'],['들여쓰기 감소','들여쓰기 감소'],['배경색','배경색'],['글자색','글자색'],['테두리','테두리'],['모든 테두리','모든 테두리'],['바깥쪽 테두리','바깥쪽 테두리'],['굵은 바깥쪽 테두리','굵은 바깥쪽 테두리'],['아래쪽 굵은 테두리','아래쪽 굵은 테두리'],['테두리 없음','테두리 없음'],['숫자 형식','숫자 형식'],['통화 형식','통화 형식'],['백분율 형식','백분율 형식'],['천 단위 구분','천 단위 구분'],['소수점 늘리기','소수점 늘리기'],['소수점 줄이기','소수점 줄이기'],['합계','Σ 합계'],['찾기','찾기'],['바꾸기','바꾸기'],['지우기','내용 지우기'],['서식 지우기','서식 지우기'],['범위 서식 복사','범위 서식 복사'],['범위 지우기','범위 지우기'],['아래로 채우기','아래로 채우기'],['오른쪽으로 채우기','오른쪽으로 채우기'],['값만 붙여넣기','값만 붙여넣기']],
+'삽입':[['새 시트','시트 추가'],['행 삽입','행 추가'],['열 삽입','열 추가'],['행 삭제','행 삭제'],['열 삭제','열 삭제'],['셀 병합/해제','셀 병합/해제'],['하이퍼링크','하이퍼링크'],['그림 삽입','그림 삽입'],['행 높이','행 높이'],['열 너비','열 너비'],['차트 삽입','차트 삽입'],['표 스타일','표 스타일']],
+'페이지 레이아웃':[['여백 설정','여백 설정'],['인쇄 방향','인쇄 방향'],['인쇄 영역 설정','인쇄 영역 설정'],['인쇄 영역 지우기','인쇄 영역 지우기'],['페이지 나누기 미리보기','페이지 나누기 미리보기'],['배율 100%','배율 100%'],['그리드라인','눈금선 표시']],
 '수식':[['이름 관리자','이름 관리자'],['합계 SUM','SUM 함수'],['평균 AVERAGE','AVERAGE 함수'],['최솟값 MIN','MIN 함수'],['최댓값 MAX','MAX 함수'],['개수 COUNT','COUNT 함수'],['비어 있지 않은 개수 COUNTA','COUNTA 함수'],['조건 합계 SUMIF','SUMIF 함수'],['조건 개수 COUNTIF','COUNTIF 함수'],['조건 IF','IF 함수'],['반올림 ROUND','ROUND 함수'],['절댓값 ABS','ABS 함수'],['문자 길이 LEN','LEN 함수'],['대문자 UPPER','UPPER 함수'],['소문자 LOWER','LOWER 함수'],['오늘 날짜 TODAY','TODAY 함수'],['수식 표시 전환','수식 표시 전환'],['수식 다시 계산','다시 계산']],
 '데이터':[['정렬 오름차순','오름차순 정렬'],['정렬 내림차순','내림차순 정렬'],['자동 필터','자동 필터'],['필터 해제','필터 해제'],['중복 제거','중복 제거'],['텍스트 나누기','텍스트 나누기'],['데이터 유효성 검사','데이터 유효성 검사'],['조건부 서식','조건부 서식'],['CSV/Excel 가져오기','Excel/CSV 열기']],
 '검토':[['셀 메모','셀 메모'],['시트 이름 변경','시트 이름 변경'],['시트 삭제','시트 삭제']],
-'보기':[['수식 입력줄','수식 입력줄 표시'],['전체 화면 격자','전체 화면 격자'],['확대','확대'],['축소','축소'],['고정 창','고정 창'],['고정 창 해제','고정 창 해제'],['인쇄 미리보기','인쇄 미리보기']]
+'보기':[['수식 입력줄','수식 입력줄 표시'],['눈금선 표시','눈금선 표시'],['머리글 표시','머리글 표시'],['확대','확대'],['축소','축소'],['100%','배율 100%'],['선택 영역 확대','선택 영역 확대'],['첫 행 고정','첫 행 고정'],['첫 열 고정','첫 열 고정'],['고정 창','고정 창'],['고정 창 해제','고정 창 해제'],['인쇄 미리보기','인쇄 미리보기']]
 };
 function drawRibbon(name){
  document.querySelectorAll('[data-ribbon]').forEach(b=>b.classList.toggle('active',b.dataset.ribbon===name));
@@ -91,11 +91,11 @@ function drawRibbon(name){
  const groupMap={
 '실행 취소':'실행 취소/다시 실행','다시 실행':'실행 취소/다시 실행','범위 복사':'클립보드',
 '굵게':'글꼴','기울임':'글꼴','밑줄':'글꼴','글꼴 크기':'글꼴','배경색':'글꼴','글자색':'글꼴',
-'가운데 정렬':'맞춤','왼쪽 정렬':'맞춤','오른쪽 정렬':'맞춤','줄 바꿈':'맞춤',
-'테두리':'표시 형식','숫자 형식':'표시 형식','서식 지우기':'표시 형식','범위 서식 복사':'클립보드',
+'가운데 정렬':'맞춤','왼쪽 정렬':'맞춤','오른쪽 정렬':'맞춤','위쪽 정렬':'맞춤','세로 가운데 정렬':'맞춤','아래쪽 정렬':'맞춤','줄 바꿈':'맞춤','들여쓰기 증가':'맞춤','들여쓰기 감소':'맞춤',
+'테두리':'테두리','모든 테두리':'테두리','바깥쪽 테두리':'테두리','굵은 바깥쪽 테두리':'테두리','아래쪽 굵은 테두리':'테두리','테두리 없음':'테두리','숫자 형식':'숫자 형식','통화 형식':'숫자 형식','백분율 형식':'숫자 형식','천 단위 구분':'숫자 형식','소수점 늘리기':'숫자 형식','소수점 줄이기':'숫자 형식','서식 지우기':'표시 형식','범위 서식 복사':'클립보드',
 '합계':'편집','찾기':'편집','바꾸기':'편집','지우기':'편집','범위 지우기':'편집','아래로 채우기':'편집','오른쪽으로 채우기':'편집','값만 붙여넣기':'클립보드',
 '새 시트':'시트','행 삽입':'셀','열 삽입':'셀','행 삭제':'셀','열 삭제':'셀','셀 병합/해제':'맞춤','행 높이':'셀 크기','열 너비':'셀 크기',
-'차트 삽입':'차트','표 스타일':'표','그리드라인':'표시','배율 100%':'확대/축소','방향':'페이지 설정',
+'차트 삽입':'차트','표 스타일':'표','그리드라인':'표시','배율 100%':'확대/축소','방향':'페이지 설정','여백 설정':'페이지 설정','인쇄 방향':'페이지 설정','인쇄 영역 설정':'페이지 설정','인쇄 영역 지우기':'페이지 설정','페이지 나누기 미리보기':'페이지 설정','그림 삽입':'그림','머리글 표시':'표시','선택 영역 확대':'확대/축소','첫 행 고정':'창','첫 열 고정':'창',
 '이름 관리자':'정의된 이름','수식 표시 전환':'수식 감사','수식 다시 계산':'계산','데이터 유효성 검사':'데이터 도구','조건부 서식':'스타일',
 '정렬 오름차순':'정렬 및 필터','정렬 내림차순':'정렬 및 필터','자동 필터':'정렬 및 필터','필터 해제':'정렬 및 필터','중복 제거':'데이터 도구','텍스트 나누기':'데이터 도구',
 '셀 메모':'메모','시트 이름 변경':'시트','시트 삭제':'시트','수식 입력줄':'표시','전체 화면 격자':'표시','확대':'확대/축소','축소':'확대/축소','고정 창':'창','고정 창 해제':'창','인쇄 미리보기':'페이지 설정'
@@ -117,7 +117,26 @@ function activeRangeText(fallback){return selectedRange||fallback||selected;}
 function cloneJson(v){return v===undefined?undefined:JSON.parse(JSON.stringify(v))}
 function translateFormula(formula,dr,dc){if(typeof formula!=='string'||!formula.startsWith('='))return formula;return formula.replace(/("(?:[^"]|"")*")|(?<![A-Z0-9_])((?:\$?)[A-Z]{1,3}(?:\$?)\d+)(?![A-Z0-9_])/gi,(all,str,ref)=>{if(str)return str;const m=/^(\$?)([A-Z]{1,3})(\$?)(\d+)$/i.exec(ref);if(!m)return ref;const p=parse(m[2]+m[4]);const col=m[1]?p.c:p.c+dc,row=m[3]?p.r:p.r+dr;if(col<1||row<1)return '#REF!';return m[1]+colName(col)+m[3]+row;});}
 function copyCellMetadata(from,to,includeValue=true){const d=data();if(includeValue){if(d[from]===undefined)delete d[to];else {const fp=parse(from),tp=parse(to),v=d[from];d[to]=typeof v==='string'&&v.startsWith('=')?translateFormula(v,tp.r-fp.r,tp.c-fp.c):v;}}for(const suffix of ['::style','::numFmt','::bold','::italic','::note','::hyperlink','::validation','::conditional']){const x=from+suffix,y=to+suffix;if(d[x]===undefined)delete d[y];else d[y]=cloneJson(d[x]);}}
-function runAction(a){
+function selectedCellAddresses(){const rg=rangeBounds(activeRangeText(selected));if(!rg)return [selected];const out=[];for(let r=rg.r1;r<=rg.r2;r++)for(let c=rg.c1;c<=rg.c2;c++)out.push(addr(r,c));return out;}
+function applyBorderPreset(preset){const rg=rangeBounds(activeRangeText(selected));if(!rg)return;const cells=selectedCellAddresses();snapshot();const make=(style)=>({style,color:{argb:'FF000000'}});cells.forEach(a=>{const p=parse(a),st={...(data()[a+'::style']||{})},b={...(st.border||{})};if(preset==='없음'){delete st.border;}else if(preset==='전체'){b.top=make('thin');b.bottom=make('thin');b.left=make('thin');b.right=make('thin');st.border=b;}else if(preset==='바깥'||preset==='굵은 바깥'){if(p.r===rg.r1)b.top=make(preset==='굵은 바깥'?'thick':'thin');if(p.r===rg.r2)b.bottom=make(preset==='굵은 바깥'?'thick':'thin');if(p.c===rg.c1)b.left=make(preset==='굵은 바깥'?'thick':'thin');if(p.c===rg.c2)b.right=make(preset==='굵은 바깥'?'thick':'thin');st.border=b;}else if(preset==='아래 굵게'){b.bottom=make('thick');st.border=b;}data()[a+'::style']=st;});render();status.textContent='선택 범위 테두리 적용: '+preset;}
+function runAction(a){ else if(a==='모든 테두리')applyBorderPreset('전체');
+ else if(a==='바깥쪽 테두리')applyBorderPreset('바깥');
+ else if(a==='굵은 바깥쪽 테두리')applyBorderPreset('굵은 바깥');
+ else if(a==='아래쪽 굵은 테두리')applyBorderPreset('아래 굵게');
+ else if(a==='테두리 없음')applyBorderPreset('없음');
+ else if(a==='위쪽 정렬'||a==='세로 가운데 정렬'||a==='아래쪽 정렬'||a==='들여쓰기 증가'||a==='들여쓰기 감소'){snapshot();selectedCellAddresses().forEach(a0=>{const st=data()[a0+'::style']||{};st.alignment={...(st.alignment||{})};if(a==='위쪽 정렬')st.alignment.vertical='top';if(a==='세로 가운데 정렬')st.alignment.vertical='middle';if(a==='아래쪽 정렬')st.alignment.vertical='bottom';if(a==='들여쓰기 증가')st.alignment.indent=Math.min(15,(st.alignment.indent||0)+1);if(a==='들여쓰기 감소')st.alignment.indent=Math.max(0,(st.alignment.indent||0)-1);data()[a0+'::style']=st;});render();}
+ else if(a==='통화 형식'||a==='백분율 형식'||a==='천 단위 구분'){const nf=a==='통화 형식'?'₩#,##0.00':a==='백분율 형식'?'0.00%':'#,##0.00';snapshot();selectedCellAddresses().forEach(a0=>data()[a0+'::numFmt']=nf);render();status.textContent=a+' 적용';}
+ else if(a==='소수점 늘리기'||a==='소수점 줄이기'){snapshot();selectedCellAddresses().forEach(a0=>{const old=data()[a0+'::numFmt']||'#,##0';const decimals=(old.split('.')[1]||'').replace(/[^0#]/g,'').length;const next=Math.max(0,Math.min(8,decimals+(a==='소수점 늘리기'?1:-1)));data()[a0+'::numFmt']=next?'#,##0.'+'0'.repeat(next):'#,##0';});render();}
+ else if(a==='첫 행 고정'){grid.dataset.freezeRow='1';grid.dataset.freezeCol='0';applyFreezePanes();status.textContent='첫 행 고정';}
+ else if(a==='첫 열 고정'){grid.dataset.freezeRow='0';grid.dataset.freezeCol='1';applyFreezePanes();status.textContent='첫 열 고정';}
+ else if(a==='선택 영역 확대'){const rg=rangeBounds(activeRangeText(selected));if(rg){const el=grid.querySelector('[data-cell="'+addr(rg.r1,rg.c1)+'"]');el?.scrollIntoView({block:'center',inline:'center'});}}
+ else if(a==='머리글 표시'){grid.classList.toggle('hide-headers');}
+ else if(a==='여백 설정'){const m=prompt('인쇄 여백: 보통 / 좁게 / 넓게','보통');if(m){sheets[active].pageMargins=m;status.textContent='인쇄 여백 설정: '+m;}}
+ else if(a==='인쇄 영역 설정'){const rg=activeRangeText(selected);sheets[active].printArea=rg;status.textContent='인쇄 영역 설정: '+rg;}
+ else if(a==='인쇄 영역 지우기'){delete sheets[active].printArea;status.textContent='인쇄 영역 해제';}
+ else if(a==='페이지 나누기 미리보기'){document.querySelector('#wrap').classList.toggle('page-break-preview');}
+ else if(a==='그림 삽입'){const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=async()=>{const file=input.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const p=parse(selected);sheets[active].images=sheets[active].images||[];sheets[active].images.push({src:String(reader.result),tl:{col:p.c-1,row:p.r-1},ext:{width:240,height:160}});renderImages();persistWorkbook();status.textContent='그림을 '+selected+' 위치에 삽입했습니다.';};reader.readAsDataURL(file);};input.click();}
+
  if(a==='새 문서'){if(confirm('새 통합 문서를 만들까요?')){snapshot();sheets=[{name:'시트1',data:{}}];active=0;selected='A1';render();status.textContent='새 통합 문서';}}
  else if(a==='Excel/CSV 열기'){const up=document.querySelector('#toolbar #upload');if(up)up.click();else{drawRibbon('파일');document.querySelector('#toolbar #upload')?.click();}}
  else if(a==='XLSX로 내보내기')exportXlsx();
