@@ -9,6 +9,35 @@
 .ribbon-tab{border:0!important;border-radius:0!important;background:transparent!important;color:#3b3b3b!important;padding:12px 15px!important;position:relative;font-size:13px}
 .ribbon-tab.active{color:var(--excel)!important;font-weight:700}.ribbon-tab.active:after{content:"";height:3px;background:var(--excel);position:absolute;left:10px;right:10px;bottom:0}
 .toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 14px;background:#fff;border-bottom:1px solid #c9cdd2;min-height:76px}
+/* Excel-style ribbon refresh */
+.top{min-height:48px;padding:6px 16px;gap:18px}
+.logo{font-size:19px}
+.top button{border:1px solid #ffffff66;background:#ffffff18;border-radius:3px;padding:6px 11px}
+.ribbon-tabs{padding:0 12px;min-height:36px;box-shadow:0 1px 2px #0000000a}
+.ribbon-tab{padding:9px 14px!important;font-size:13px}
+.toolbar{display:flex;align-items:stretch;flex-wrap:nowrap;gap:0;padding:7px 10px 5px;background:#f8f9fa;border-bottom:1px solid #c9cdd2;min-height:104px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.toolbar .tool-group{display:flex;align-content:flex-start;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:4px;padding:4px 10px 18px;min-width:max-content;max-width:360px;min-height:88px;border-right:1px solid #d9dde2;position:relative}
+.toolbar .tool-group button{min-height:29px;padding:5px 9px;border:1px solid transparent;border-radius:3px;background:transparent;color:#252525;font-size:12px;white-space:nowrap}
+.toolbar .tool-group button:hover{background:#e8f2ec;border-color:#b7d2c0}
+.toolbar .tool-group button:active{background:#d5e9dc}
+.toolbar .tool-group button.primary{background:#217346;color:white;border-color:#217346}
+.toolbar .group-label{display:block;position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:10px;color:#666;border-top:1px solid #e2e5e8;padding-top:3px;pointer-events:none}
+.toolbar .tool-group:has(button[data-action="굵게"]),.toolbar .tool-group:has(button[data-action="기울임"]){max-width:280px}
+.formula{min-height:40px;padding:5px 12px;gap:7px}
+#address{width:92px}
+#formula{height:29px}
+#apply{padding:5px 14px}
+button,select,input{border-radius:3px}
+@media(max-width:600px){
+ .top{min-height:46px;padding:6px 9px}
+ .ribbon-tabs{top:46px;padding:0 3px}
+ .ribbon-tab{padding:9px 11px!important}
+ .toolbar{min-height:94px;padding:5px 6px}
+ .toolbar .tool-group{min-height:82px;padding:3px 7px 17px;max-width:300px}
+ .toolbar .tool-group button{font-size:11px;padding:5px 7px;min-height:28px}
+ .formula{padding:5px 6px}
+ .wrap{height:calc(100dvh - 265px)}
+}
 .tool-group{display:flex;align-items:center;gap:5px;padding:0 10px;border-right:1px solid #e1e4e8;min-height:48px}.tool-group:last-child{border-right:0}.ribbon-file{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-left:1px solid #e1e4e8}.no-grid td,.no-grid th{border-color:transparent}.toolbar{min-height:64px}.group-label{display:none}.toolbar .tool-group{gap:6px;padding:0 9px}.toolbar button{min-height:34px}.group-label{font-size:10px;color:#72777d;text-align:center;margin-top:3px}
 button,select,input{background:#fff;color:var(--text);border:1px solid #c8cdd2;border-radius:3px;padding:7px 10px;font:inherit}
 button{cursor:pointer}button:hover{background:#eaf3ed;border-color:#9ab9a5}button:focus-visible,input:focus-visible{outline:2px solid #26834a;outline-offset:1px}
@@ -51,12 +80,24 @@ function drawRibbon(name){
  bar.innerHTML='';
  const groups={};
  (ribbonDefs[name]||[]).forEach(([label,action])=>{
- const g=(action==='B'||action==='I')?'글꼴':(['실행 취소','다시 실행','새 문서','시트 추가'].includes(action)?'실행':'도구');
+ const groupMap={
+'실행 취소':'실행 취소/다시 실행','다시 실행':'실행 취소/다시 실행','범위 복사':'클립보드',
+'굵게':'글꼴','기울임':'글꼴','밑줄':'글꼴','글꼴 크기':'글꼴','배경색':'글꼴','글자색':'글꼴',
+'가운데 정렬':'맞춤','왼쪽 정렬':'맞춤','오른쪽 정렬':'맞춤','줄 바꿈':'맞춤',
+'테두리':'표시 형식','숫자 형식':'표시 형식','서식 지우기':'표시 형식','범위 서식 복사':'클립보드',
+'합계':'편집','찾기':'편집','바꾸기':'편집','지우기':'편집','범위 지우기':'편집','아래로 채우기':'편집','오른쪽으로 채우기':'편집','값만 붙여넣기':'클립보드',
+'새 시트':'시트','행 삽입':'셀','열 삽입':'셀','행 삭제':'셀','열 삭제':'셀','셀 병합/해제':'맞춤','행 높이':'셀 크기','열 너비':'셀 크기',
+'차트 삽입':'차트','표 스타일':'표','그리드라인':'표시','배율 100%':'확대/축소','방향':'페이지 설정',
+'이름 관리자':'정의된 이름','수식 표시 전환':'수식 감사','수식 다시 계산':'계산','데이터 유효성 검사':'데이터 도구','조건부 서식':'스타일',
+'정렬 오름차순':'정렬 및 필터','정렬 내림차순':'정렬 및 필터','자동 필터':'정렬 및 필터','필터 해제':'정렬 및 필터','중복 제거':'데이터 도구','텍스트 나누기':'데이터 도구',
+'셀 메모':'메모','시트 이름 변경':'시트','시트 삭제':'시트','수식 입력줄':'표시','전체 화면 격자':'표시','확대':'확대/축소','축소':'확대/축소','고정 창':'창','고정 창 해제':'창','인쇄 미리보기':'페이지 설정'
+};
+const g=groupMap[action]||'기타 도구';
  (groups[g]??=[]).push([label,action]);
  });
  Object.entries(groups).forEach(([g,items])=>{
  const el=document.createElement('div');el.className='tool-group';
- items.forEach(([label,action])=>{const b=document.createElement('button');b.textContent=label;b.dataset.action=action;el.appendChild(b)});
+ items.forEach(([label,action])=>{const b=document.createElement('button');b.textContent=label;b.dataset.action=action;if(['굵게','기울임','밑줄','합계','새 시트','차트 삽입','XLSX로 내보내기'].includes(action))b.classList.add('primary');el.appendChild(b)});
  const cap=document.createElement('div');cap.className='group-label';cap.textContent=g;el.appendChild(cap);bar.appendChild(el);
  });
  }
